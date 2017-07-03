@@ -45,7 +45,7 @@ variable "region_zone" {
 }
 
 variable "servers" {
-    default     = "1"
+    default     = "3"
     description = "The number of Akka nodes to launch"
 }
 

@@ -30,24 +30,24 @@ resource "google_compute_instance" "akka" {
 
     provisioner "file" {
         source      = "${path.module}/akka_upstart.conf"
-        destination = "/tmp/upstart-akka.conf"
+        destination = "/tmp/akka_upstart.conf"
     }
 
     provisioner "file" {
         source      = "${path.module}/consul_upstart.conf"
-        destination = "/tmp/upstart-consul.conf"
+        destination = "/tmp/consul_upstart.conf"
     }
 
     provisioner "file" {
-        source      = "${path.module}/akka.jar"
-        destination = "/tmp/akka.jar"
+        source      = "${path.module}/akka-fd-benchmark.jar"
+        destination = "/tmp/akka-fd-benchmark.jar"
     }
 
     # Consul cluster already formed by https://github.com/hashicorp/consul/tree/master/terraform/google
     provisioner "remote-exec" {
         inline = [
             "echo ${var.servers} > /tmp/akka-server-count",
-            "echo ${var.consul_server_addr} > /tmp/consul-server-addr"
+            "echo ${var.consul_server_address} > /tmp/consul-server-addr"
         ]
     }
 
@@ -58,6 +58,7 @@ resource "google_compute_instance" "akka" {
             "${path.module}/ip_tables.sh",
         ]
     }
+
 }
 
 resource "google_compute_firewall" "consul_agent_ingress" {

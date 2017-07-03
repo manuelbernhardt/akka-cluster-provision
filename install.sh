@@ -2,15 +2,17 @@
 set -e
 
 echo "Installing dependencies..."
-sudo add-apt-repository ppa:webupd8team/java
+sudo add-apt-repository ppa:webupd8team/java -y
 sudo apt-get update -y
+echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
 sudo apt-get -y install oracle-java8-installer
 sudo apt-get install -y unzip
 sudo apt-get install -y ntp
 sudo apt-get install -y wget
 
 echo "Fetching Consul..."
-CONSUL=0.8.3
+CONSUL=0.8.5
 cd /tmp
 wget https://releases.hashicorp.com/consul/${CONSUL}/consul_${CONSUL}_linux_amd64.zip -O consul.zip --quiet
 
@@ -30,21 +32,22 @@ EOF
 echo "Installing Upstart service for consul..."
 sudo mkdir -p /etc/consul.d
 sudo mkdir -p /etc/service
-sudo chown root:root /tmp/upstart.conf
-sudo mv /tmp/upstart-consul.conf /etc/init/consul.conf
+sudo chown root:root /tmp/consul_upstart.conf
+sudo mv /tmp/consul_upstart.conf /etc/init/consul.conf
 sudo chmod 0644 /etc/init/consul.conf
 sudo mv /tmp/consul_flags /etc/service/consul
 sudo chmod 0644 /etc/service/consul
 
-
-
 echo "Installing akka..."
 sudo mkdir -p /opt/akka
-sudo mv /tmp/akka.jar /opt/akka
-sudo echo "phi" > /opt/akka/failure-detector
+sudo mv /tmp/akka-fd-benchmark.jar /opt/akka
+echo "phi" > /tmp/failure-detector
+sudo mv /tmp/failure-detector /opt/akka
 
 echo "Installing Upstart service for akka..."
 sudo mkdir -p /etc/akka.d
-sudo chown root:root /tmp/upstart.conf
-sudo mv /tmp/upstart-akka.conf /etc/init/akka.conf
+sudo chown root:root /tmp/akka_upstart.conf
+sudo mv /tmp/akka_upstart.conf /etc/init/akka.conf
+SERVER_COUNT=$(cat /tmp/akka-server-count | tr -d '\n')
+sudo sed "s/  export EXPECT_MEMBERS=.*/  export EXPECT_MEMBERS=${SERVER_COUNT}/g" /etc/init/akka.conf
 sudo chmod 0644 /etc/init/akka.conf
