@@ -34,6 +34,8 @@ resource "aws_instance" "akka" {
     provisioner "remote-exec" {
         inline = [
             "echo ${var.servers} > /tmp/akka-server-count",
+            "echo ${var.papertrail_host} > /tmp/papertrail-host",
+            "echo ${var.papertail_port} > /tmp/papertail-port",
             "echo ${var.consul_server_address} > /tmp/consul-server-addr"
         ]
     }

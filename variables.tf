@@ -66,6 +66,16 @@ variable "servers" {
     description = "The number of Akka nodes to launch"
 }
 
+variable "papertrail_host" {
+    default     = ""
+    description = "The papertail host"
+}
+
+variable "papertrail_port" {
+    default     = ""
+    description = "The papertrail port"
+}
+
 variable "instance_type" {
   default     = "t2.micro"
   description = "AWS Instance type, if you change, make sure it is compatible with AMI, not all AMIs allow all instance types "
