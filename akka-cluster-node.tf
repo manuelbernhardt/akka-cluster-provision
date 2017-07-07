@@ -1,31 +1,18 @@
-resource "google_compute_instance" "akka" {
+resource "aws_instance" "akka" {
     count = "${var.servers}"
-
-    name = "akka-${count.index}"
-    zone = "${var.region_zone}"
-    tags = ["${var.tag_name}"]
-
-    machine_type = "${var.machine_type}"
-
-    disk {
-        image = "${lookup(var.machine_image, var.platform)}"
-    }
-
-    network_interface {
-        network = "default"
-
-        access_config {
-            # Ephemeral
-        }
-    }
-
-    service_account {
-        scopes = ["https://www.googleapis.com/auth/compute.readonly"]
-    }
+    ami = "${lookup(var.ami, "${var.region}-${var.platform}")}"
+    instance_type = "${var.instance_type}"
+    key_name = "${var.key_name}"
+    security_groups = ["${aws_security_group.akka.name}"]
 
     connection {
         user        = "${lookup(var.user, var.platform)}"
         private_key = "${file("${var.key_path}")}"
+    }
+
+    #Instance tags
+    tags {
+        Name = "${var.tag_name}-${count.index}"
     }
 
     provisioner "file" {
@@ -61,40 +48,38 @@ resource "google_compute_instance" "akka" {
 
 }
 
-resource "google_compute_firewall" "consul_agent_ingress" {
-    name = "consul-agent-internal-access"
-    network = "default"
+resource "aws_security_group" "akka" {
+    name = "akka${var.platform}"
+    description = "Akka internal traffic + maintenance."
 
-    allow {
+    // These are for internal traffic
+    ingress {
+        from_port = 0
+        to_port = 65535
         protocol = "tcp"
-        ports = [
-            "8500", # HTTP
-            "8600"  # DNS
-        ]
+        self = true
     }
 
-    source_tags = ["${var.tag_name}"]
-    target_tags = ["${var.tag_name}"]
-}
+    ingress {
+        from_port = 0
+        to_port = 65535
+        protocol = "udp"
+        self = true
+    }
 
-resource "google_compute_firewall" "akka_ingress" {
-    name = "akka-internal-access"
-    network = "default"
-
-    allow {
+    // These are for maintenance
+    ingress {
+        from_port = 22
+        to_port = 22
         protocol = "tcp"
-        ports = [
-            "2552"
-        ]
+        cidr_blocks = ["0.0.0.0/0"]
     }
 
-    allow {
-      protocol = "udp"
-      ports = [
-        "25520"
-      ]
+    // This is for outbound internet access
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
     }
-
-    source_tags = ["${var.tag_name}"]
-    target_tags = ["${var.tag_name}"]
 }
