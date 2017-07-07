@@ -51,7 +51,7 @@ sudo mv /tmp/akka_upstart.conf /etc/init/akka.conf
 SERVER_COUNT=$(cat /tmp/akka-server-count | tr -d '\n')
 PAPERTRAIL_HOST=$(cat /tmp/papertail-host | tr -d '\n')
 PAPERTRAIL_PORT=$(cat /tmp/papertrail-port | tr -d '\n')
-sudo sed "s/  export EXPECT_MEMBERS=.*/  export EXPECT_MEMBERS=${SERVER_COUNT}/g" /etc/init/akka.conf
-sudo sed "s/  export PAPERTRAIL_HOST=.*/  export PAPERTRAIL_HOST=${PAPERTRAIL_HOST}/g" /etc/init/akka.conf
-sudo sed "s/  export PAPERTRAIL_PORT=.*/  export PAPERTRAIL_PORT=${PAPERTRAIL_PORT}/g" /etc/init/akka.conf
+sudo sed -i "s/  export EXPECT_MEMBERS=.*/  export EXPECT_MEMBERS=${SERVER_COUNT}/g" /etc/init/akka.conf
+sudo sed -i "s/  export PAPERTRAIL_HOST=.*/  export PAPERTRAIL_HOST=${PAPERTRAIL_HOST}/g" /etc/init/akka.conf
+sudo sed -i "s/  export PAPERTRAIL_PORT=.*/  export PAPERTRAIL_PORT=${PAPERTRAIL_PORT}/g" /etc/init/akka.conf
 sudo chmod 0644 /etc/init/akka.conf
