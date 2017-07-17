@@ -3,7 +3,7 @@ resource "aws_instance" "akka" {
     ami = "${lookup(var.ami, "${var.region}-${var.platform}")}"
     instance_type = "${var.instance_type}"
     key_name = "${var.key_name}"
-    security_groups = ["${var.aws_security_group}"]
+    vpc_security_group_ids = ["${var.aws_security_group}"]
 
     connection {
         user        = "${lookup(var.user, var.platform)}"
