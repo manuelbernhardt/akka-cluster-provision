@@ -81,6 +81,10 @@ variable "instance_type" {
   description = "AWS Instance type, if you change, make sure it is compatible with AMI, not all AMIs allow all instance types "
 }
 
+variable "aws_security_group" {
+  description = "Name of the AWS Security Group allowing access to the consul servers"
+}
+
 variable "tag_name" {
     default     = "akka"
     description = "Name tag for the servers"
