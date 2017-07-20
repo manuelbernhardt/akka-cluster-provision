@@ -50,7 +50,7 @@ resource "aws_instance" "akka-template-instance" {
 }
 
 resource "aws_ami_from_instance" "akka-template-ami" {
-  name               = "akka-template-ami"
+  name               = "akka-template-ami-${aws_instance.akka-template-instance.id}"
   source_instance_id = "${aws_instance.akka-template-instance.id}"
 }
 
