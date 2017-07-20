@@ -1,5 +1,5 @@
-resource "aws_instance" "akka" {
-    count = "${var.servers}"
+resource "aws_instance" "akka-template-instance" {
+    #count = "${var.servers}"
     ami = "${lookup(var.ami, "${var.region}-${var.platform}")}"
     instance_type = "${var.instance_type}"
     key_name = "${var.key_name}"
@@ -12,7 +12,7 @@ resource "aws_instance" "akka" {
 
     #Instance tags
     tags {
-        Name = "${var.tag_name}-${count.index}"
+        Name = "akka-template"
     }
 
     provisioner "file" {
@@ -43,9 +43,31 @@ resource "aws_instance" "akka" {
     provisioner "remote-exec" {
         scripts = [
             "${path.module}/install.sh",
-            "${path.module}/service.sh",
             "${path.module}/ip_tables.sh",
         ]
+    }
+
+}
+
+resource "aws_ami_from_instance" "akka-template-ami" {
+  name               = "akka-template-ami"
+  source_instance_id = "${aws_instance.akka-template-instance.id}"
+}
+
+resource "aws_instance" "akka" {
+    count = "${var.servers}"
+    ami = "${aws_ami_from_instance.akka-template-ami.id}"
+    instance_type = "${var.instance_type}"
+    vpc_security_group_ids = ["${var.aws_security_group}"]
+    key_name = "${var.key_name}"
+
+    tags {
+        Name = "${var.tag_name}-${count.index}"
+    }
+
+    connection {
+        user        = "${lookup(var.user, var.platform)}"
+        private_key = "${file("${var.key_path}")}"
     }
 
 }
