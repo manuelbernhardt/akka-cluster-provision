@@ -77,7 +77,7 @@ variable "papertrail_port" {
 }
 
 variable "instance_type" {
-  default     = "t2.micro"
+  default     = "c4.large"
   description = "AWS Instance type, if you change, make sure it is compatible with AMI, not all AMIs allow all instance types "
 }
 

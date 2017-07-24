@@ -54,12 +54,18 @@ resource "aws_ami_from_instance" "akka-template-ami" {
   source_instance_id = "${aws_instance.akka-template-instance.id}"
 }
 
+resource "aws_placement_group" "akka-cluster" {
+  name     = "akka-cluster"
+  strategy = "cluster"
+}
+
 resource "aws_instance" "akka" {
     count = "${var.servers}"
     ami = "${aws_ami_from_instance.akka-template-ami.id}"
     instance_type = "${var.instance_type}"
     vpc_security_group_ids = ["${var.aws_security_group}"]
     key_name = "${var.key_name}"
+    placement_group = "${aws_placement_group.akka-cluster.id}"
 
     tags {
         Name = "${var.tag_name}-${count.index}"
