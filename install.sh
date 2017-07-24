@@ -48,10 +48,12 @@ echo "Installing Upstart service for akka..."
 sudo mkdir -p /etc/akka.d
 sudo chown root:root /tmp/akka_upstart.conf
 sudo mv /tmp/akka_upstart.conf /etc/init/akka.conf
-SERVER_COUNT=$(cat /tmp/akka-server-count | tr -d '\n')
+MEMBER_COUNT=$(cat /tmp/akka-member-count | tr -d '\n')
 PAPERTRAIL_HOST=$(cat /tmp/papertrail-host | tr -d '\n')
 PAPERTRAIL_PORT=$(cat /tmp/papertrail-port | tr -d '\n')
-sudo sed -i "s/  export EXPECT_MEMBERS=.*/  export EXPECT_MEMBERS=${SERVER_COUNT}/g" /etc/init/akka.conf
+SYSTEM_NAME=$(cat /tmp/system-name | tr -d '\n')
+sudo sed -i "s/  export EXPECT_MEMBERS=.*/  export EXPECT_MEMBERS=${MEMBER_COUNT}/g" /etc/init/akka.conf
 sudo sed -i "s/  export PAPERTRAIL_HOST=.*/  export PAPERTRAIL_HOST=${PAPERTRAIL_HOST}/g" /etc/init/akka.conf
 sudo sed -i "s/  export PAPERTRAIL_PORT=.*/  export PAPERTRAIL_PORT=${PAPERTRAIL_PORT}/g" /etc/init/akka.conf
+sudo sed -i "s/  export SYSTEM_NAME=.*/  export SYSTEM_NAME=${SYSTEM_NAME}/g" /etc/init/akka.conf
 sudo chmod 0644 /etc/init/akka.conf

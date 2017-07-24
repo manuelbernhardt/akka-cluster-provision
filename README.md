@@ -12,6 +12,7 @@ terraform apply -var 'region=us-east-1' \
                 -var 'key_path=/home/ubuntu/.ssh/akka.pem' \
                 -var 'consul_server_address=x.x.x.x' \
                 -var 'servers=3' \
+                -var 'members=3' \
                 -var 'aws_security_group=sg-1234567' \
                 -var 'papertrail_host=logsN.papertrailapp.com' \
                 -var 'papertrail_port=1234'

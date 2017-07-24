@@ -66,6 +66,11 @@ variable "servers" {
     description = "The number of Akka nodes to launch"
 }
 
+variable "members" {
+    default     = "3"
+    description = "The number of Akka nodes the actor system expects to work with"
+}
+
 variable "papertrail_host" {
     default     = ""
     description = "The papertail host"
@@ -74,6 +79,11 @@ variable "papertrail_host" {
 variable "papertrail_port" {
     default     = ""
     description = "The papertrail port"
+}
+
+variable "system_name" {
+    default     = "akka-cluster"
+    description = "The actor system name"
 }
 
 variable "instance_type" {

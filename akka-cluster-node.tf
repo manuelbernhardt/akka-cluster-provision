@@ -34,9 +34,11 @@ resource "aws_instance" "akka-template-instance" {
     provisioner "remote-exec" {
         inline = [
             "echo ${var.servers} > /tmp/akka-server-count",
+            "echo ${var.members} > /tmp/akka-member-count",
             "echo ${var.papertrail_host} > /tmp/papertrail-host",
             "echo ${var.papertrail_port} > /tmp/papertrail-port",
-            "echo ${var.consul_server_address} > /tmp/consul-server-addr"
+            "echo ${var.consul_server_address} > /tmp/consul-server-addr",
+            "echo ${var.system_name} > /tmp/system-name"
         ]
     }
 
