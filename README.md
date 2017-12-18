@@ -2,7 +2,9 @@
 
 Terraform script for bootstrapping an Akka Cluster on AWS.
 
-This requires a Consul server (or cluster) to already run, which can be created [here](https://github.com/hashicorp/consul/tree/master/terraform/aws.
+This requires a Consul server (or cluster) to already run, which can be created [here](https://github.com/hashicorp/consul/tree/master/terraform/aws).
+
+This will result in the creation of an AWS security group which you'll need in the next step.
 
 To run a cluster, provide the following variables (the Papertrail variables are optional but useful to get aggregated logs):
 
