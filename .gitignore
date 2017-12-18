@@ -1,3 +1,4 @@
 akka-fd-benchmark.jar
+.terraform
 terraform.tfstate
 terraform.tfstate.backup
